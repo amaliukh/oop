@@ -1,136 +1,36 @@
-package com.tasks7.rpn;
-
-
-
-import java.util.Deque;
-import java.util.LinkedList;
-
-
-
-public class Rpn {
-
-
-
-	private final static String DELIM = " ";
-
-
-
-	public static double parse(String rpnString) {
-
-		if (rpnString == null || rpnString.isEmpty()) {
-
-			throw new RPNParserException();
-
-		}
-
-		Deque<Double> stek = new LinkedList<Double>();
-
-		String[] result = rpnString.split(DELIM);
-
-		for (int i = 0; i < result.length; i++) {
-
-			if (isNumber(result[i])) {
-
-				stek.push(new Double(result[i]));
-
-			} else if (isOperator(result[i])) {
-
-				if (stek.size() < 2) {
-
-					throw new RPNParserException();
-
-				}
-
-				switch (result[i]) {
-
-				case "+":
-
-					stek.push(new Double(stek.pop() + stek.pop()));
-
-					break;
-
-				case "-":
-
-					stek.push(new Double(-stek.pop() + stek.pop()));
-
-					break;
-
-				case "/":
-
-					if(stek.peek() == 0){
-
-						throw new ArithmeticException();
-
-					}
-
-						stek.push(new Double(1/stek.pop() * stek.pop()));
-
-					break;
-
-				case "*":
-
-					stek.push(new Double(stek.pop() * stek.pop()));
-
-					break;
-
-				}
-
-			} else {
-
-				throw new RPNParserException();
-
-			}
-
-		}
-
-		if (stek.size() != 1) {
-
-			throw new RPNParserException();
-
-		}
-
-		return stek.pop();
-
-	}
-
-
-
-	private static boolean isNumber(String string) {
-
-		if (string == null)
-
-			return false;
-
-		return string.matches("^-?\\d+(\\.\\d+)?$");
-
-	}
-
-
-
-	private static boolean isOperator(String string) {
-
-		if (string == null)
-
-			return false;
-
-		return string.matches("[+-/*]{1}");
-
-	}
-
-
-
-	public static void main(String[] args) {
-
-		
-
-		if (args == null || args.length == 0) {
-
-			throw new RPNParserException();
-
-		}
-
-		System.out.println(parse(args[0]));
-
-	}
-
-}
+package com.tasks7.rpn; 
+ 
+import java.util.Deque; import java.util.LinkedList; 
+ 
+public class Rpn { 
+ 
+ 	public static double parse(String rpnString) { 
+        String input = rpnString; 
+ 	 	String[] str = input.split(" "); 
+ 	    LinkedList<String> arr = new LinkedList<String>(); 
+        for (String str1: str) {             arr.add(str1); 
+        } 
+        while(arr.size() != 1) 
+        {             int j = 0;             while(j < arr.size()) 
+            { 
+                if(arr.get(j).equals("+"))                     break;                 if(arr.get(j).equals("-"))                     break;                 if(arr.get(j).equals("*"))                     break;                 if(arr.get(j).equals("/"))                     break;                 j++; 
+            } 
+            if(j == arr.size() || j < 2) 
+                throw new RPNParserException(); 
+ 
+            Double res =  new Double(-100000);             if(arr.get(j).equals("+"))                 res = Double.parseDouble(arr.get(j - 2)) + Double.parseDouble(arr.get(j - 1));             if(arr.get(j).equals("-"))                 res = Double.parseDouble(arr.get(j - 2)) - Double.parseDouble(arr.get(j - 1));             if(arr.get(j).equals("*"))                 res = Double.parseDouble(arr.get(j - 2)) * Double.parseDouble(arr.get(j - 1));             if(arr.get(j).equals("/")) {                 if (Double.parseDouble(arr.get(j - 1)) == 0)                     throw new ArithmeticException();                 res = Double.parseDouble(arr.get(j - 2)) / Double.parseDouble(arr.get(j - 1)); 
+            } 
+            arr.remove(j - 2);             arr.remove(j - 2);             arr.remove(j - 2);             if (res == -100000) 
+            { 
+                throw new RPNParserException(); 
+            } 
+            arr.add(j - 2, res.toString()); 
+        } 
+        return Double.parseDouble(arr.get(0)); 
+ 	} 
+ 
+ 	public static void main(String[] args) { 
+ 
+ 	} 
+ 
+} 
